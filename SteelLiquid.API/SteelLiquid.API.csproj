@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Dependencies\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
@@ -21,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SteelLiquid.DA\SteelLiquid.DA.csproj" />
     <ProjectReference Include="..\SteelLiquid.Entity\SteelLiquid.Entity.csproj" />
   </ItemGroup>
 

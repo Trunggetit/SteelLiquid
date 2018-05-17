@@ -10,23 +10,24 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NSwag.AspNetCore;
+using SteelLiquid.DA.Interfaces;
 using SteelLiquid.Entity;
 
 namespace SteelLiquid.API
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
-        {
+        //public Startup(IHostingEnvironment env)
+        //{
 
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddEnvironmentVariables();
-            Configuration = builder.Build();
+        //    //var builder = new ConfigurationBuilder()
+        //    //    .SetBasePath(env.ContentRootPath)
+        //    //    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+        //    //    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+        //    //    .AddEnvironmentVariables();
+        //    //Configuration = builder.Build();
 
-        }
+        //}
 
         public Startup(IConfiguration configuration)
         {
@@ -58,10 +59,13 @@ namespace SteelLiquid.API
             //services.AddCors();
 
             //// Add framework services.
-            //services.AddMvc();
+            services.AddMvc()
+                .AddSessionStateTempDataProvider();
 
-            ////Register dependency injections
-            //Dependencies.Register(services);
+            services.AddSession();
+
+            //Register dependency injections
+            Dependencies.Dependencies.Register(services);
 
             //// Add functionality to inject IOptions<T>
             //services.AddOptions();
@@ -90,19 +94,28 @@ namespace SteelLiquid.API
                 settings.GeneratorSettings.DefaultPropertyNameHandling = NJsonSchema.PropertyNameHandling.CamelCase;
             });
 
+            var cs = app.ApplicationServices.GetService<IConnectionSettings>();
+            cs.DefaultConnectionString = Configuration["ConnectionStrings:SqlDefaultDBName"];
+
+            app.UseStaticFiles();
+            app.UseAuthentication();
+            app.UseSession();
+
             app.UseMvc();
+
+
         }
 
-        private void LoadDatabaseConnectionStrings()
-        {
-            var csList = Configuration.GetSection("ConnectionStrings").GetChildren().Where(i => i.Key.EndsWith("Connection"));
-            foreach (var cs in csList) DatabaseConnections.AddConectionString(cs.Key, cs.Value);
+        //private void LoadDatabaseConnectionStrings()
+        //{
+        //    var csList = Configuration.GetSection("ConnectionStrings").GetChildren().Where(i => i.Key.EndsWith("Connection"));
+        //    foreach (var cs in csList) DatabaseConnections.AddConectionString(cs.Key, cs.Value);
 
-            DatabaseConnections.SqlDBServers = Configuration.GetConnectionString("SqlDBServers").Split(',').ToList();
-            DatabaseConnections.MySqlDBServers = Configuration.GetConnectionString("MySqlDBServers").Split(',').ToList();
+        //    DatabaseConnections.SqlDBServers = Configuration.GetConnectionString("SqlDBServers").Split(',').ToList();
+        //    DatabaseConnections.MySqlDBServers = Configuration.GetConnectionString("MySqlDBServers").Split(',').ToList();
 
-            DatabaseConnections.SqlDefaultDBName = Configuration.GetConnectionString("SqlDefaultDBName");
-            DatabaseConnections.MySqlDefaultDBName = Configuration.GetConnectionString("MySqlDefaultDBName");
-        }
+        //    DatabaseConnections.SqlDefaultDBName = Configuration.GetConnectionString("SqlDefaultDBName");
+        //    DatabaseConnections.MySqlDefaultDBName = Configuration.GetConnectionString("MySqlDefaultDBName");
+        //}
     }
 }

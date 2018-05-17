@@ -8,7 +8,7 @@ namespace SteelLiquid.DA
 {
     public class BaseDA
     {
-        private readonly string _connectionString;
+        public readonly string _connectionString;
         public readonly bool _isUsingSqlConnection;
         public ILogger Logger { get; set; }
 
