@@ -17,18 +17,6 @@ namespace SteelLiquid.API
 {
     public class Startup
     {
-        //public Startup(IHostingEnvironment env)
-        //{
-
-        //    //var builder = new ConfigurationBuilder()
-        //    //    .SetBasePath(env.ContentRootPath)
-        //    //    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-        //    //    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-        //    //    .AddEnvironmentVariables();
-        //    //Configuration = builder.Build();
-
-        //}
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -36,47 +24,20 @@ namespace SteelLiquid.API
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //LoadDatabaseConnectionStrings();
-
-            //services.AddMvcCore()
-            //   .AddAuthorization()
-            //   .AddJsonFormatters();
-
-            //services.AddAuthentication("Bearer")
-            //    .AddIdentityServerAuthentication(options =>
-            //    {
-            //        options.Authority = "https://webservice.mdpweb.net/identityserver";
-            //        options.RequireHttpsMetadata = true;
-
-            //        options.ApiName = "AnalyticsApi";
-            //    });
-
-            //services.AddResponseCompression();
-
-            //services.AddCors();
-
-            //// Add framework services.
             services.AddMvc()
                 .AddSessionStateTempDataProvider();
 
             services.AddSession();
 
+            services.Configure<IISOptions>(options =>
+            {
+                options.ForwardClientCertificate = false;
+            });
+
             //Register dependency injections
             Dependencies.Dependencies.Register(services);
-
-            //// Add functionality to inject IOptions<T>
-            //services.AddOptions();
-
-            //services.AddSingleton<IConfiguration>(Configuration);
-
-            //// Inject an implementation of ISwaggerProvider with defaulted settings applied
-            //services.AddSwaggerGen(c =>
-            //{
-            //    c.SwaggerDoc("v1", new Info { Title = "Nextgen Analytics API", Version = "v1" });
-            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -97,6 +58,10 @@ namespace SteelLiquid.API
             var cs = app.ApplicationServices.GetService<IConnectionSettings>();
             cs.DefaultConnectionString = Configuration["ConnectionStrings:SqlDefaultDBName"];
 
+            DatabaseConnections.SqlDefaultDBName = Configuration.GetConnectionString("SqlDefaultDBName");
+            DatabaseConnections.MySqlDefaultDBName = Configuration.GetConnectionString("MySqlDefaultDBName");
+
+
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseSession();
@@ -105,17 +70,5 @@ namespace SteelLiquid.API
 
 
         }
-
-        //private void LoadDatabaseConnectionStrings()
-        //{
-        //    var csList = Configuration.GetSection("ConnectionStrings").GetChildren().Where(i => i.Key.EndsWith("Connection"));
-        //    foreach (var cs in csList) DatabaseConnections.AddConectionString(cs.Key, cs.Value);
-
-        //    DatabaseConnections.SqlDBServers = Configuration.GetConnectionString("SqlDBServers").Split(',').ToList();
-        //    DatabaseConnections.MySqlDBServers = Configuration.GetConnectionString("MySqlDBServers").Split(',').ToList();
-
-        //    DatabaseConnections.SqlDefaultDBName = Configuration.GetConnectionString("SqlDefaultDBName");
-        //    DatabaseConnections.MySqlDefaultDBName = Configuration.GetConnectionString("MySqlDefaultDBName");
-        //}
     }
 }

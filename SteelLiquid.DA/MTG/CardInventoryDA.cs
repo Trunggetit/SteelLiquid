@@ -19,7 +19,31 @@ namespace SteelLiquid.DA
 
         }
 
-        public async Task<int> DelUpdateAsync(CardInventory cards = null)
+        public async Task<int> DeleteAsync(int id)
+        {
+            var results = 0;
+            using (var con = base.SqlConnection)
+            {
+                try
+                {
+                    con.Open();
+                    string query = "UPDATE dbo.CardInventory SET IsDeleted = 1 WHERE ID = @ID";
+                    results = await con.ExecuteAsync(query, new { ID = id, IsDeleted = 1 }).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    con.Close();
+                }
+
+                return results;
+            }
+        }
+
+        public async Task<int> UpdateAsync(CardInventory cards = null)
         {
             var results = 0;
 
@@ -53,6 +77,31 @@ namespace SteelLiquid.DA
                 {
                     con.Open();
                     results = await con.InsertAsync(cards).ConfigureAwait(false) ?? 0;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    con.Close();
+                }
+
+                return results;
+            }
+        }
+
+        public async Task<IEnumerable<CardInventory>> ReadAsync(int id)
+        {
+            IEnumerable<CardInventory> results = Enumerable.Empty<CardInventory>();
+
+            using (var con = base.SqlConnection)
+            {
+                try
+                {
+                    con.Open();
+                    var resultData = await con.GetListAsync<CardInventory>(new { ID = id }).ConfigureAwait(false);
+                    results = resultData.ToList();
                 }
                 catch (Exception ex)
                 {
