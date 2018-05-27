@@ -14,49 +14,49 @@ namespace SteelLiquid.API.Controllers
     public class MTGCardController : Controller
     {
         private readonly ILogger _logger;
-        private readonly Tasks _TasksRepo;
+        private readonly ICardInventory _CardInventoryRepo;
 
-        public MTGCardController(ITasks TasksRepo, ILogger<MTGCardController> logger)
+        public MTGCardController(ICardInventory CardInventoryRepo, ILogger<MTGCardController> logger)
         {
-            _TasksRepo = TasksRepo;
+            _CardInventoryRepo = CardInventoryRepo;
             _logger = logger;
         }
 
         // GET: api/MTGCard
         [HttpGet]
-        public IEnumerable<Tasks> SelectAllAsync()
+        public IEnumerable<CardInventory> SelectAllAsync()
         {
-            var data = _TasksRepo.SelectAllAsync().Result
+            var data = _CardInventoryRepo.SelectAllAsync().Result
                 .Where(x=> x.IsDeleted == false);
             return data;
         }
 
         // GET: api/MTGCard/5
         [HttpGet("{id}", Name = "Get")]
-        public Task<IEnumerable<Tasks>> ReadAsync(int id)
+        public Task<IEnumerable<CardInventory>> ReadAsync(int id)
         {
-            return _TasksRepo.ReadAsync(id);
+            return _CardInventoryRepo.ReadAsync(id);
         }
 
         // POST: api/MTGCard
         [HttpPost]
-        public void Update(Tasks card)
+        public void Update(CardInventory card)
         {
-            _TasksRepo.UpdateAsync(card);
+            _CardInventoryRepo.UpdateAsync(card);
         }
 
         // PUT: api/MTGCard/5
         [HttpPut("{id}")]
-        public void Insert(Tasks card)
+        public void Insert(CardInventory card)
         {
-            _TasksRepo.InsertAsync(card);
+            _CardInventoryRepo.InsertAsync(card);
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            _TasksRepo.DeleteAsync(id);
+            _CardInventoryRepo.DeleteAsync(id);
         }
     }
 }

@@ -5,58 +5,59 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SteelLiquid.Entity.MTG;
+using SteelLiquid.Entity.eBay;
 
 namespace SteelLiquid.API.Controllers
 {
     [Produces("application/json")]
     [Route("api/MTGCard")]
-    public class MTGCardController : Controller
+    public class TasksController : Controller
     {
         private readonly ILogger _logger;
-        private readonly ICardInventory _CardInventoryRepo;
+        private readonly ITask _TaskRepo;
 
-        public MTGCardController(ICardInventory CardInventoryRepo, ILogger<MTGCardController> logger)
+        public TasksController(ITask TaskRepo, ILogger<TasksController> logger)
         {
-            _CardInventoryRepo = CardInventoryRepo;
+            _TaskRepo = TaskRepo;
             _logger = logger;
         }
 
         // GET: api/MTGCard
-        [HttpGet]
-        public IEnumerable<CardInventory> SelectAllAsync()
-        {
-            var data = _CardInventoryRepo.SelectAllAsync().Result
-                .Where(x=> x.IsDeleted == false);
-            return data;
-        }
+        //[HttpGet]
+        //public IEnumerable<Tasks> SelectAllAsync()
+        //{
+        //    return 
+        //    //var data = _TaskRepo.SelectAllAsync().Result
+        //    //    .Where(x=> x.IsDeleted == false);
+        //    //return data;
+        //}
 
-        // GET: api/MTGCard/5
-        [HttpGet("{id}", Name = "Get")]
-        public Task<IEnumerable<CardInventory>> ReadAsync(int id)
-        {
-            return _CardInventoryRepo.ReadAsync(id);
-        }
+        //// GET: api/MTGCard/5
+        //[HttpGet("{id}", Name = "Get")]
+        //public Task<IEnumerable<Task>> ReadAsync(int id)
+        //{
+        //    return _TaskRepo.ReadAsync(id);
+        //}
 
-        // POST: api/MTGCard
-        [HttpPost]
-        public void Update(CardInventory card)
-        {
-            _CardInventoryRepo.UpdateAsync(card);
-        }
+        //// POST: api/MTGCard
+        //[HttpPost]
+        //public void Update(Task card)
+        //{
+        //    _TaskRepo.UpdateAsync(card);
+        //}
 
-        // PUT: api/MTGCard/5
-        [HttpPut("{id}")]
-        public void Insert(CardInventory card)
-        {
-            _CardInventoryRepo.InsertAsync(card);
-        }
+        //// PUT: api/MTGCard/5
+        //[HttpPut("{id}")]
+        //public void Insert(Task card)
+        //{
+        //    _TaskRepo.InsertAsync(card);
+        //}
 
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-            _CardInventoryRepo.DeleteAsync(id);
-        }
+        //// DELETE: api/ApiWithActions/5
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //    _TaskRepo.DeleteAsync(id);
+        //}
     }
 }

@@ -16,7 +16,7 @@ namespace SteelLiquid.API.Controllers
         private readonly ILogger _logger;
         private readonly IContact _ContactsRepo;
 
-        public ContactsController(IContacts ContactsRepo, ILogger<ContactsController> logger)
+        public ContactsController(IContact ContactsRepo, ILogger<ContactsController> logger)
         {
             _ContactsRepo = ContactsRepo;
             _logger = logger;
